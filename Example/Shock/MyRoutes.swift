@@ -18,7 +18,6 @@ class MyRoutes {
     private let server = MockServer(port: 9990, bundle: Bundle.main)
     
     init() {
-	    
         // Add your own routes here to test them in the example app
 	    routes = [
             .simple(
@@ -32,6 +31,7 @@ class MyRoutes {
                 urlPath: "/custom",
                 query: ["item": "value"],
                 requestHeaders: ["X-Custom-Header": "custom-header-value"],
+                requestBody: nil,
                 responseHeaders: [:],
                 code: 200,
                 filename: "custom-route.json"
