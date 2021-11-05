@@ -157,10 +157,10 @@ extension MockHTTPRoute: Equatable {
            case MockHTTPRoute.simple(let rhsMethod, let rhsUrlPath, let _, _) = rhs {
             return lhsMethod == rhsMethod && lhsUrlPath.pathMatchesStrippingVariables(rhsUrlPath)
         }
-        if case MockHTTPRoute.custom(let lhsMethod, let lhsUrlPath, let lhsQuery, _, let lhsRequestBody, let lhsResponseHeaders, _, _) = lhs,
-           case MockHTTPRoute.custom(let rhsMethod, let rhsUrlPath, let rhsQuery, _, let rhsRequestBody, let rhsResponseHeaders, _, _) = rhs {
+        if case MockHTTPRoute.custom(let lhsMethod, let lhsUrlPath, let lhsQuery, _, let lhsRequestBody, _, _, _) = lhs,
+           case MockHTTPRoute.custom(let rhsMethod, let rhsUrlPath, let rhsQuery, _, let rhsRequestBody, _, _, _) = rhs {
             return lhsMethod == rhsMethod && lhsUrlPath.pathMatchesStrippingVariables(rhsUrlPath)
-                && lhsQuery == rhsQuery && lhsRequestBody == rhsRequestBody && headers(lhsResponseHeaders, contains: rhsResponseHeaders)
+                && lhsQuery == rhsQuery && lhsRequestBody == rhsRequestBody
         }
         if case MockHTTPRoute.template(let lhsMethod, let lhsUrlPath, let _, _, _) = lhs,
            case MockHTTPRoute.template(let rhsMethod, let rhsUrlPath, let _, _, _) = rhs {
