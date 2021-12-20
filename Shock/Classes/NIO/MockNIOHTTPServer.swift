@@ -45,6 +45,11 @@ class MockNIOHttpServer: MockNIOBaseServer, MockHttpServer {
         self.middleware.append(middleware)
     }
     
+    func replaceMiddleware(with middleware: [Middleware]) {
+        self.middleware = middleware
+        self.httpHandler?.replaceMiddleware(with: middleware)
+    }
+    
     func has<T>(middlewareOfType type: T.Type) -> Bool where T: Middleware {
         return (self.middleware ?? []).contains { $0 is T }
     }
