@@ -4,9 +4,11 @@
 //
 //  Created by Antonio Strijdom on 30/09/2020.
 //
+
 import Foundation
 import NIO
 import NIOHTTP1
+
 /// SwiftNIO implementation of mock HTTP server
 class MockNIOHttpServer: MockNIOBaseServer, MockHttpServer {
     
@@ -45,15 +47,11 @@ class MockNIOHttpServer: MockNIOBaseServer, MockHttpServer {
         self.middleware.append(middleware)
     }
     
-    func replaceMiddleware(with middleware: [Middleware]) {
-        self.middleware = middleware
-        self.httpHandler?.replaceMiddleware(with: middleware)
-    }
-    
     func has<T>(middlewareOfType type: T.Type) -> Bool where T: Middleware {
         return (self.middleware ?? []).contains { $0 is T }
     }
 }
+
 struct MockNIOHTTPRequest: MockHttpRequest {
     var eventLoop: EventLoop
     var path: String
@@ -64,10 +62,12 @@ struct MockNIOHTTPRequest: MockHttpRequest {
     var address: String?
     var params: [String : String]
 }
+
 struct RouteHandlerMapping {
     let route: MockHTTPRoute
     let handler: HandlerClosure
 }
+
 struct MockNIOHTTPRouter: MockHttpRouter {
     private var routes = [MockHTTPMethod: [RouteHandlerMapping]]()
     
@@ -75,12 +75,11 @@ struct MockNIOHTTPRouter: MockHttpRouter {
         !routes.isEmpty
     }
     
-    func handlerForMethod(_ method: String, path: String, params: [String:String], headers: [String:String], requestBody: [UInt8]) -> HandlerClosure? {
+    func handlerForMethod(_ method: String, path: String, params: [String:String], headers: [String:String]) -> HandlerClosure? {
         guard let httpMethod = MockHTTPMethod(rawValue: method.uppercased()) else { return nil }
         let methodRoutes = routes[httpMethod] ?? [RouteHandlerMapping]()
         for mapping in methodRoutes {
-            let result = mapping.route.matches(method: httpMethod, path: path, params: params, headers: headers, requestBody: requestBody.count > 0 ? requestBody : nil)
-            if result {
+            if mapping.route.matches(method: httpMethod, path: path, params: params, headers: headers) {
                 return mapping.handler
             }
         }

@@ -30,10 +30,6 @@ class MockNIOHTTPHandler {
         self.notFoundHandler = notFoundHandler
     }
     
-    public func replaceMiddleware(with middleware: [Middleware]) {
-        self.middleware = middleware
-    }
-    
     private func httpResponseHeadForVersion(_ version: HTTPVersion, status: HTTPResponseStatus, headers: HTTPHeaders = HTTPHeaders()) -> HTTPResponseHead {
         HTTPResponseHead(version: version, status: status, headers: headers)
     }

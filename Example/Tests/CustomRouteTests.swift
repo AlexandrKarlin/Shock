@@ -16,7 +16,6 @@ class CustomRouteTests: ShockTestCase {
                                            urlPath: "/custom",
                                            query: [:],
                                            requestHeaders: [:],
-                                           requestBody: nil,
                                            responseHeaders: [:],
                                            code: 200,
                                            filename: "testCustomRoute.txt")
@@ -39,7 +38,6 @@ class CustomRouteTests: ShockTestCase {
             urlPath: "/custom-with-header",
             query: [:],
             requestHeaders: customHeaders,
-            requestBody: nil,
             responseHeaders: [:],
             code: 200,
             filename: "testCustomRoute.txt"
@@ -63,7 +61,6 @@ class CustomRouteTests: ShockTestCase {
             urlPath: "/custom-with-header",
             query: [:],
             requestHeaders: customHeaders,
-            requestBody: nil,
             responseHeaders: [:],
             code: 200,
             filename: "testCustomRoute.txt"
@@ -87,7 +84,6 @@ class CustomRouteTests: ShockTestCase {
             urlPath: "/custom-with-header",
             query: [:],
             requestHeaders: [:],
-            requestBody: nil,
             responseHeaders: customHeaders,
             code: 200,
             filename: "testCustomRoute.txt"
@@ -114,7 +110,6 @@ class CustomRouteTests: ShockTestCase {
             urlPath: "/custom-with-query",
             query: ["item1": "value1", "item2": "value2"],
             requestHeaders: [:],
-            requestBody: nil,
             responseHeaders: [:],
             code: 200,
             filename: "testCustomRoute.txt"
@@ -125,7 +120,6 @@ class CustomRouteTests: ShockTestCase {
             urlPath: "/custom-with-query",
             query: ["item3": "value3", "item4": "value4"],
             requestHeaders: [:],
-            requestBody: nil,
             responseHeaders: [:],
             code: 200,
             filename: "testCustomRoute2.txt"
@@ -154,7 +148,6 @@ class CustomRouteTests: ShockTestCase {
             urlPath: "/custom-with-query",
             query: ["item1": "value1", "item2": "value2"],
             requestHeaders: [:],
-            requestBody: nil,
             responseHeaders: [:],
             code: 200,
             filename: "testCustomRoute.txt"
@@ -177,7 +170,6 @@ class CustomRouteTests: ShockTestCase {
             urlPath: "/custom-with-query",
             query: [:],
             requestHeaders: [:],
-            requestBody: nil,
             responseHeaders: [:],
             code: 200,
             filename: nil
