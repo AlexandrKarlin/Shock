@@ -22,6 +22,7 @@ public enum MockHTTPRoute {
         urlPath: String,
         query: [String: String],
         requestHeaders: [String: String],
+        requestBody: [UInt8]?,
         responseHeaders: [String: String],
         code: Int,
         filename: String?
@@ -55,7 +56,7 @@ public enum MockHTTPRoute {
     public var urlPath: String? {
         switch self {
         case .simple(_, let urlPath, _, _),
-             .custom(_, let urlPath, _, _, _, _, _),
+             .custom(_, let urlPath, _, _, _, _, _, _),
              .template(_, let urlPath, _, _, _),
              .redirect(let urlPath, _),
              .timeout(_, let urlPath, _):
@@ -68,7 +69,7 @@ public enum MockHTTPRoute {
     public var method: MockHTTPMethod? {
         switch self {
         case .simple(let method, _, _, _),
-             .custom(let method, _, _, _, _, _, _),
+             .custom(let method, _, _, _, _, _, _, _),
              .template(let method, _, _, _, _),
              .timeout(let method, _, _):
             return method
@@ -81,7 +82,7 @@ public enum MockHTTPRoute {
     
     public var requestHeaders: [String: String]? {
         switch self {
-        case .custom(_, _, _, let headers, _, _, _):
+        case .custom(_, _, _, let headers, _, _, _, _):
             return headers
         case .simple, .template, .redirect, .collection, .timeout:
             return nil
@@ -90,9 +91,18 @@ public enum MockHTTPRoute {
     
     public var query: [String: String]? {
         switch self {
-        case .custom(_, _, let query, _, _, _, _):
+        case .custom(_, _, let query, _, _, _, _, _):
             return query
         case .simple, .template, .redirect, .collection, .timeout:
+            return nil
+        }
+    }
+    
+    public var requestBody: [UInt8]? {
+        switch self {
+        case .custom(_, _, _, _, let requestBody, _, _, _):
+            return requestBody
+        default:
             return nil
         }
     }
@@ -101,7 +111,7 @@ public enum MockHTTPRoute {
     
     var statusCode: Int? {
         switch self {
-        case .custom(_, _, _, _, _, let statusCode, _),
+        case .custom(_, _, _, _, _, _, let statusCode, _),
              .simple(_, _, let statusCode, _),
              .template(_, _, let statusCode, _, _):
              return statusCode
@@ -114,7 +124,7 @@ public enum MockHTTPRoute {
     
     var responseHeaders: [String: String]? {
         switch self {
-        case .custom(_, _, _, _, let responseHeaders, _, _):
+        case .custom(_, _, _, _, _, let responseHeaders, _, _):
             return responseHeaders
         default:
             return nil
@@ -123,7 +133,7 @@ public enum MockHTTPRoute {
     
     var filename: String? {
         switch self {
-        case .custom(_, _, _, _, _, _, let filename),
+        case .custom(_, _, _, _, _, _, _, let filename),
              .simple(_, _, _, let filename),
              .template(_, _, _, let filename, _):
             return filename
@@ -204,14 +214,14 @@ extension MockHTTPRoute: Equatable {
         return false
     }
     
-    public func matches(method: MockHTTPMethod, path: String, params: [String:String], headers: [String:String]) -> Bool {
+    public func matches(method: MockHTTPMethod, path: String, params: [String:String], headers: [String:String], requestBody: [UInt8]?) -> Bool {
         guard !method.rawValue.isEmpty else { return false }
         guard !path.isEmpty else { return false }
         switch self {
         case .simple:
             return MockHTTPRoute.simple(method: method, urlPath: path, code: 0, filename: nil) == self
         case .custom:
-            return MockHTTPRoute.custom(method: method, urlPath: path, query: params, requestHeaders: headers, responseHeaders: [:], code: 0, filename: nil) == self
+            return MockHTTPRoute.custom(method: method, urlPath: path, query: params, requestHeaders: headers, requestBody: requestBody, responseHeaders: [:], code: 0, filename: nil) == self
         case .template:
             return MockHTTPRoute.template(method: method, urlPath: path, code: 0, filename: nil, templateInfo: [:]) == self
         case .redirect:
@@ -222,4 +232,5 @@ extension MockHTTPRoute: Equatable {
             return MockHTTPRoute.timeout(method: method, urlPath: path, timeoutInSeconds: 0) == self
         }
     }
+}
 }
