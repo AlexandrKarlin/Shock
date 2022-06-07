@@ -170,10 +170,10 @@ extension MockHTTPRoute: Equatable {
            case MockHTTPRoute.simple(let rhsMethod, let rhsUrlPath, let _, _) = rhs {
             return lhsMethod == rhsMethod && lhsUrlPath.pathMatches(rhsUrlPath)
         }
-        if case MockHTTPRoute.custom(let lhsMethod, let lhsUrlPath, let lhsQuery, let lhsRequestHeaders, _, _, _) = lhs,
-           case MockHTTPRoute.custom(let rhsMethod, let rhsUrlPath, let rhsQuery, let rhsRequestHeaders, _, _, _) = rhs {
+        if case MockHTTPRoute.custom(let lhsMethod, let lhsUrlPath, let lhsQuery, _, let lhsRequestBody, _, _, _) = lhs,
+           case MockHTTPRoute.custom(let rhsMethod, let rhsUrlPath, let rhsQuery, _, let rhsRequestBody, _, _, _) = rhs {
             return lhsMethod == rhsMethod && lhsUrlPath.pathMatches(rhsUrlPath)
-                && lhsQuery == rhsQuery && headers(lhsRequestHeaders, contains: rhsRequestHeaders)
+                && lhsQuery == rhsQuery && lhsRequestBody == rhsRequestBody
         }
         if case MockHTTPRoute.template(let lhsMethod, let lhsUrlPath, let _, _, _) = lhs,
            case MockHTTPRoute.template(let rhsMethod, let rhsUrlPath, let _, _, _) = rhs {
@@ -232,5 +232,4 @@ extension MockHTTPRoute: Equatable {
             return MockHTTPRoute.timeout(method: method, urlPath: path, timeoutInSeconds: 0) == self
         }
     }
-}
 }

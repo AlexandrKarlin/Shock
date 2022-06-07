@@ -47,6 +47,11 @@ class MockNIOHttpServer: MockNIOBaseServer, MockHttpServer {
         self.middleware.append(middleware)
     }
     
+    func replaceMiddleware(with middleware: [Middleware]) {
+        self.middleware = middleware
+        self.httpHandler?.replaceMiddleware(with: middleware)
+    }
+    
     func has<T>(middlewareOfType type: T.Type) -> Bool where T: Middleware {
         return (self.middleware ?? []).contains { $0 is T }
     }
@@ -75,11 +80,12 @@ struct MockNIOHTTPRouter: MockHttpRouter {
         !routes.isEmpty
     }
     
-    func handlerForMethod(_ method: String, path: String, params: [String:String], headers: [String:String]) -> HandlerClosure? {
+    func handlerForMethod(_ method: String, path: String, params: [String:String], headers: [String:String], requestBody: [UInt8]) -> HandlerClosure? {
         guard let httpMethod = MockHTTPMethod(rawValue: method.uppercased()) else { return nil }
         let methodRoutes = routes[httpMethod] ?? [RouteHandlerMapping]()
         for mapping in methodRoutes {
-            if mapping.route.matches(method: httpMethod, path: path, params: params, headers: headers) {
+            let result = mapping.route.matches(method: httpMethod, path: path, params: params, headers: headers, requestBody: requestBody.count > 0 ? requestBody : nil)
+            if result {
                 return mapping.handler
             }
         }
