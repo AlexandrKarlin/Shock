@@ -23,9 +23,9 @@ struct MockRoutesMiddleware: Middleware {
         guard let handler = router.handlerForMethod(context.requestContext.method,
                                                     path: context.requestContext.path,
                                                     params: context.requestContext.params,
-                                                    headers: context.requestContext.headers) else {
-            context.notFoundHandler?(context.requestContext, context.responseContext)
-            return context.next()
+                                                    requestBody: context.requestContext.body) else {
+             context.notFoundHandler?(context.requestContext, context.responseContext)
+             return context.next()
         }
         
         handler(context.requestContext, context.responseContext)
