@@ -13,7 +13,7 @@ import NIOHTTP1
 class MockNIOHttpServer: MockNIOBaseServer, MockHttpServer {
     
     private let responseFactory: ResponseFactory
-    private var httpHandler: MockNIOHTTPHandler?
+    private var httpHandlers: [MockNIOHTTPHandler]
     private var router = MockNIOHTTPRouter()
     private var middleware = [Middleware]()
     private var routeMiddleware: MockRoutesMiddleware?
@@ -21,17 +21,19 @@ class MockNIOHttpServer: MockNIOBaseServer, MockHttpServer {
     
     init(responseFactory: ResponseFactory) {
         self.responseFactory = responseFactory
+        self.httpHandlers = []
         super.init()
     }
     
     func start(_ port: Int, forceIPv4: Bool, priority: DispatchQoS.QoSClass) throws -> Void {
         try start(port) { (channel) -> EventLoopFuture<Void> in
             channel.pipeline.configureHTTPServerPipeline(withErrorHandling: true).flatMap {
-                self.httpHandler = MockNIOHTTPHandler(responseFactory: self.responseFactory,
+                let httpHandler = MockNIOHTTPHandler(responseFactory: self.responseFactory,
                                                       router: self.router,
                                                       middleware: self.middleware,
                                                       notFoundHandler: self.notFoundHandler)
-                return channel.pipeline.addHandler(self.httpHandler!)
+                self.httpHandlers.append(httpHandler)
+                return channel.pipeline.addHandler(httpHandler)
             }
         }
     }
@@ -49,7 +51,9 @@ class MockNIOHttpServer: MockNIOBaseServer, MockHttpServer {
     
     func replaceMiddleware(with middleware: [Middleware]) {
         self.middleware = middleware
-        self.httpHandler?.replaceMiddleware(with: middleware)
+        for httpHandler in self.httpHandlers {
+            httpHandler.replaceMiddleware(with: middleware)
+        }
     }
     
     func has<T>(middlewareOfType type: T.Type) -> Bool where T: Middleware {
